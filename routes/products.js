@@ -1,5 +1,6 @@
 const express = require('express');
 const Product = require('../models/product');
+const Review = require('../models/review');
 
 const router = express.Router();
 
@@ -33,6 +34,7 @@ router.post('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   const { id } = req.params;
   Product.findById(id)
+    .populate('reviews')
     .then((product) => {
       res.render('products/detail', { product });
     })
@@ -48,8 +50,27 @@ router.post('/:id/delete', (req, res, next) => {
       res.redirect('/products');
     })
     .catch((error) => {
-      next(error)
+      next(error);
+    });
+});
+
+router.post('/:id/review', (req, res, next) => {
+  const { id } = req.params; // product id
+  const { content, stars, author } = req.body; // review object
+
+  const review = new Review({
+    content,
+    author,
+    stars,
+  });
+  review.save()
+    .then(() => Product.findByIdAndUpdate(id, { $push: { reviews: review.id } }))
+    .then(() => {
+      res.redirect(`/products/${id}`);
     })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 module.exports = router;

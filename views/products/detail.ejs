@@ -2,3 +2,17 @@
 <form action="/products/<%= product.id %>/delete" method="post">
   <button type="submit">delete</button>
 </form>
+<h2>show list</h2>
+<% product.reviews.forEach((review) => { %>
+  <%= review.content %>
+<% }) %>
+<h2>write a comment</h2>
+<form action="/products/<%= product.id %>/review" method="post">
+  <label for="content">Content</label>
+  <input type="text" name="content">
+  <label for="stars">stars</label>
+  <input type="text" name="stars">
+  <label for="author">author</label>
+  <input type="text" name="author">
+  <button type="submit">write the comment</button>
+</form>
