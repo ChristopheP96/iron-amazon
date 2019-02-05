@@ -6,6 +6,7 @@ const router = express.Router();
 
 /* GET products listing. */
 router.get('/', (req, res, next) => {
+  console.log(req.session.currentUser);
   Product.find({})
     .then((products) => {
       res.render('products/products', { products });

@@ -5,6 +5,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const protectedRoute = require('./middlewares/protected');
 
 const indexRouter = require('./routes/index');
 const productsRouter = require('./routes/products');
@@ -28,8 +31,26 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 24 * 60 * 60, // 1 day
+  }),
+  secret: 'ironhack',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,
+  },
+}));
+
+app.use((req, res, next) => {
+  app.locals.currentUser = req.session.currentUser;
+  next();
+});
+
 app.use('/', indexRouter);
-app.use('/products', productsRouter);
+app.use('/products', protectedRoute, productsRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
