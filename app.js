@@ -45,7 +45,10 @@ app.use(session({
 }));
 
 app.use((req, res, next) => {
+  // for the whole app //
   app.locals.currentUser = req.session.currentUser;
+  // for the next middleware //
+  res.locals.currentUser = req.session.currentUser;
   next();
 });
 

@@ -1,4 +1,5 @@
 <h2>My products</h2>
+<%= currentUser.username %>
 <ul>
   <% products.forEach((product) => { %>
     <li><%= product.name %> <a href="/products/<%= product.id %>">Link</a></li>

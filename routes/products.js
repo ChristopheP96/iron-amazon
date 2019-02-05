@@ -4,14 +4,17 @@ const Review = require('../models/review');
 
 const router = express.Router();
 
+// async await
+
 /* GET products listing. */
-router.get('/', (req, res, next) => {
-  console.log(req.session.currentUser);
-  Product.find({})
-    .then((products) => {
-      res.render('products/products', { products });
-    })
-    .catch(next);
+router.get('/', async (req, res, next) => {
+  // console.log(req.session.currentUser);
+  try {
+    const products = await Product.find({});
+    res.render('products/products', { products });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get('/new', (req, res, next) => {
@@ -55,7 +58,7 @@ router.post('/:id/delete', (req, res, next) => {
     });
 });
 
-router.post('/:id/review', (req, res, next) => {
+router.post('/:id/review', async (req, res, next) => {
   const { id } = req.params; // product id
   const { content, stars, author } = req.body; // review object
 
@@ -64,14 +67,21 @@ router.post('/:id/review', (req, res, next) => {
     author,
     stars,
   });
-  review.save()
-    .then(() => Product.findByIdAndUpdate(id, { $push: { reviews: review.id } }))
-    .then(() => {
-      res.redirect(`/products/${id}`);
-    })
-    .catch((error) => {
-      next(error);
-    });
+  try {
+    await review.save();
+    await Product.findByIdAndUpdate(id, { $push: { reviews: review.id } });
+    res.redirect(`/products/${id}`);
+  } catch (error) {
+    next(error);
+  }
+  // review.save()
+  //   .then(() => Product.findByIdAndUpdate(id, { $push: { reviews: review.id } }))
+  //   .then(() => {
+  //     res.redirect(`/products/${id}`);
+  //   })
+  //   .catch((error) => {
+  //     next(error);
+  //   });
 });
 
 module.exports = router;
