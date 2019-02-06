@@ -12,14 +12,15 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/signup', (req, res, next) => {
-  res.render('auth/signup', { errorMessage: undefined });
+  res.render('auth/signup');
 });
 
 router.post('/signup', (req, res, next) => {
   const { username, password } = req.body;
 
   if (username === '' || password === '') {
-    res.render('auth/signup', { errorMessage: 'empty fields' });
+    req.flash('error', 'empty fields by flash');
+    res.redirect('/signup');
   } else {
     User.findOne({ username })
       .then((user) => {
@@ -34,7 +35,8 @@ router.post('/signup', (req, res, next) => {
               next(error);
             });
         } else {
-          res.render('auth/signup', { errorMessage: 'incorrect' });
+          req.flash('error', 'incorrect');
+          res.redirect('/signup');
         }
       })
       .catch((error) => {

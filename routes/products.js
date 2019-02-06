@@ -29,6 +29,8 @@ router.post('/', (req, res, next) => {
   // const imageURL = req.body.imageURL;
   Product.create({ name, price, imageURL })
     .then((result) => {
+      req.flash('success', 'created correctly');
+      req.flash('success', '<p class="bla">created correctly second message</p>');
       res.redirect('/products');
     })
     .catch((err) => {

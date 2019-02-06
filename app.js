@@ -7,7 +7,10 @@ const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const flash = require('connect-flash');
+
 const protectedRoute = require('./middlewares/protected');
+const notifications = require('./middlewares/notifications');
 
 const indexRouter = require('./routes/index');
 const productsRouter = require('./routes/products');
@@ -43,6 +46,12 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000,
   },
 }));
+app.use((req, res, next) => {
+  console.log('session', req.session);
+  next();
+});
+app.use(flash());
+app.use(notifications);
 
 app.use((req, res, next) => {
   // for the whole app //

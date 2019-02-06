@@ -6,3 +6,14 @@ body {
 a {
   color: #00B7FF;
 }
+
+.alert {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: 1px solid grey;
+}
+
+.alert-danger {
+  background-color: rgb(255, 167, 151);
+  color: rgb(187, 0, 0);
+}
