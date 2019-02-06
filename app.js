@@ -14,6 +14,7 @@ const notifications = require('./middlewares/notifications');
 
 const indexRouter = require('./routes/index');
 const productsRouter = require('./routes/products');
+const apiRouter = require('./routes/api');
 
 mongoose.connect('mongodb://localhost:27017/iron-amazon', { useNewUrlParser: true })
   .then(() => console.log('connected'))
@@ -63,6 +64,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/products', protectedRoute, productsRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
