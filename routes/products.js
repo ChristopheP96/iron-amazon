@@ -8,7 +8,7 @@ const router = express.Router();
 
 /* GET products listing. */
 router.get('/', async (req, res, next) => {
-  // console.log(req.session.currentUser);
+  console.log('branch async');
   try {
     const products = await Product.find({});
     res.render('products/products', { products });
